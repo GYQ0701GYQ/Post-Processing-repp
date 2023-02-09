@@ -234,7 +234,7 @@ def vid_eval_motion(multifiles, detpath, annopath, imageset_file, classname_map,
 	motion_iou = sio.loadmat(motion_iou_file)
 	motion_iou = np.array([[motion_iou['motion_iou'][i][0][j][0] if len(motion_iou['motion_iou'][i][0][j]) != 0 else 0 \
 							for j in range(len(motion_iou['motion_iou'][i][0]))] \
-								for i in range(len(motion_iou['motion_iou']))])
+								for i in range(len(motion_iou['motion_iou']))], dtype="object")
 
 	ap = np.zeros((len(motion_ranges), len(area_ranges), len(classname_map) - 1))
 	gt_precent = np.zeros((len(motion_ranges), len(area_ranges), len(classname_map)+1))
@@ -336,10 +336,10 @@ def boxoverlap(bb, bbgt):
 	return ov
 
 def calculate_ap(tp_cell, fp_cell, gt_img_ids, obj_labels_cell, obj_confs_cell, classname_map, npos):
-	tp_all = np.concatenate([x for x in np.array(tp_cell)[gt_img_ids] if x is not None])
-	fp_all = np.concatenate([x for x in np.array(fp_cell)[gt_img_ids] if x is not None])
-	obj_labels = np.concatenate([x for x in np.array(obj_labels_cell)[gt_img_ids] if x is not None])
-	confs = np.concatenate([x for x in np.array(obj_confs_cell)[gt_img_ids] if x is not None])
+	tp_all = np.concatenate([x for x in np.array(tp_cell, dtype="object")[gt_img_ids] if x is not None])
+	fp_all = np.concatenate([x for x in np.array(fp_cell, dtype="object")[gt_img_ids] if x is not None])
+	obj_labels = np.concatenate([x for x in np.array(obj_labels_cell, dtype="object")[gt_img_ids] if x is not None])
+	confs = np.concatenate([x for x in np.array(obj_confs_cell, dtype="object")[gt_img_ids] if x is not None])
 
 	sorted_inds = np.argsort(-confs)
 	tp_all = tp_all[sorted_inds]
